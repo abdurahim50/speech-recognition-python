@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 20px;
+}
+h1, h2 {
+    color: #333;
+}
+footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+footer a {
+    color: #007acc;
+    text-decoration: none;
+}
