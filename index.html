@@ -3,26 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speech Recognition Tool</title>
-    <link rel="stylesheet" href="styles.css">
-
+    <title>Build a Speech Recognition Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: #0078D4;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #0078D4;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        ul {
+            margin: 10px 0;
+            padding: 0 20px;
+        }
+        a {
+            color: #0078D4;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Speech Recognition in Python</h1>
-    <p>This project captures audio from a microphone and converts it to text using Python’s speech recognition library and Google Web Speech API.</p>
-    
-    <h2>How It Works</h2>
-    <ol>
-        <li>Run the Python script locally on your computer.</li>
-        <li>Speak into the microphone when prompted.</li>
-        <li>The tool will convert your speech to text and display the result.</li>
-    </ol>
-    
-    <h2>Want to try it?</h2>
-    <p><a href="https://github.com/abdurahim50/speech-recognition-python">Download the project</a> and follow the steps outlined in the <a href="README.md">README</a>.</p>
+    <header>
+        <h1>Building a Simple Speech Recognition Tool in Python</h1>
+    </header>
+    <section>
+        <h2>Overview</h2>
+        <p>In this project, we’ll use Python’s <code>speech_recognition</code> library to:</p>
+        <ul>
+            <li>Capture audio input from a microphone.</li>
+            <li>Process the audio and convert it to text using the Google Web Speech API.</li>
+            <li>Handle common errors like timeouts or unrecognizable speech.</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Prerequisites</h2>
+        <h3>1. Python Installation</h3>
+        <p>Ensure Python 3.7 or above is installed on your machine. Verify this by running:</p>
+        <pre><code>python --version</code></pre>
+        <p>If not installed, <a href="https://www.python.org/downloads/">download Python here</a>.</p>
 
+        <h3>2. Install Required Libraries</h3>
+        <p>Install the following libraries:</p>
+        <pre><code>pip install SpeechRecognition
+pip install pyaudio</code></pre>
+        <p><strong>Note:</strong> If you face issues installing <code>pyaudio</code>, download a precompiled binary for your Python version <a href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio">here</a>.</p>
+    </section>
+    <section>
+        <h2>Step 1: Writing the Code</h2>
+        <p>Here’s the complete script for our speech recognition tool:</p>
+        <pre><code>import speech_recognition as sr
+
+# Initialize the Recognizer
+recognizer = sr.Recognizer()
+
+# Capture audio from the microphone
+with sr.Microphone() as source:
+    print("Speak please...")
+    try:
+        # Listen for speech with a timeout of 10 seconds
+        audio = recognizer.listen(source, timeout=10)
+        print("Recording stopped.")
+        
+        # Recognize speech using Google's Web Speech API
+        text = recognizer.recognize_google(audio)
+        print("You said:", text)
+    except sr.WaitTimeoutError:
+        print("No speech detected within the timeout period.")
+    except sr.UnknownValueError:
+        print("Sorry, I could not understand the audio.")
+    except sr.RequestError as e:
+        print(f"Could not request results from Google Speech Recognition service; {e}")</code></pre>
+    </section>
+    <section>
+        <h2>Step 2: Running the Script</h2>
+        <p>1. Save the script as <code>speech_recognition.py</code>.</p>
+        <p>2. Run it using:</p>
+        <pre><code>python speech_recognition.py</code></pre>
+    </section>
+    <section>
+        <h2>Expected Output</h2>
+        <p>When you speak, the script transcribes your speech. For example:</p>
+        <pre><code>Speak please...
+Recording stopped.
+You said: Hello world, this is a test!</code></pre>
+        <p>If no speech is detected:</p>
+        <pre><code>No speech detected within the timeout period.</code></pre>
+    </section>
+    <section>
+        <h2>Step 3: Troubleshooting Common Issues</h2>
+        <h3>1. Microphone Not Detected</h3>
+        <p>Ensure your microphone is connected and enabled. Check system settings for the default input device.</p>
+
+        <h3>2. Installation Errors</h3>
+        <p>For <code>pyaudio</code> installation issues:</p>
+        <p><strong>On Debian-based systems:</strong></p>
+        <pre><code>sudo apt-get install portaudio19-dev
+pip install pyaudio</code></pre>
+        <p><strong>On macOS:</strong></p>
+        <pre><code>brew install portaudio
+pip install pyaudio</code></pre>
+
+        <h3>3. Speech Not Recognized</h3>
+        <p>Reduce background noise and speak clearly into the microphone.</p>
+    </section>
+    <section>
+        <h2>Step 4: Enhancing the Project</h2>
+        <p>Expand your tool by:</p>
+        <ul>
+            <li><strong>Adding a GUI:</strong> Use libraries like Tkinter or PyQt for a graphical interface.</li>
+            <li><strong>Integrating with APIs:</strong> Utilize the recognized text for chatbots, search engines, or home automation systems.</li>
+            <li><strong>Supporting Multiple Languages:</strong> Specify a language code in <code>recognize_google</code> (e.g., <code>language='es-ES'</code> for Spanish).</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Conclusion</h2>
+        <p>Congratulations! You’ve built a simple yet powerful speech recognition tool using Python. Whether you're a beginner or an experienced developer, this project lays a solid foundation for voice-enabled applications.</p>
+    </section>
     <footer>
-        <p>Created by <a href="https://github.com/Abdurahim50">Abdurahim</a></p>
+        <p>Resources: <a href="https://pypi.org/project/SpeechRecognition/">SpeechRecognition Documentation</a> | <a href="https://cloud.google.com/speech-to-text/docs/">Google Web Speech API</a></p>
     </footer>
 </body>
 </html>
