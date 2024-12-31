@@ -1,15 +1,17 @@
 # Building a Simple Speech Recognition Tool in Python
 
-Have you ever wanted to build your own voice-controlled applications? Thanks to Python and powerful libraries, it’s easier than you think. In this tutorial, I’ll walk you through building a simple speech recognition tool using Python. By the end of this project, you’ll have a script that listens to your voice and converts it into text.
+Have you ever wanted to build your own voice-controlled applications? Thanks to Python and powerful libraries, it’s easier than you think. In this tutorial, I’ll walk you through building a simple speech recognition tool using Python. By the end of this project, you’ll have a script that listens to your voice and converts it into text, and even opens applications like Notepad, Chrome, and WhatsApp based on your commands.
 
 ---
 
 ## Overview
 
-In this project, we’ll use Python’s `speech_recognition` library to:
-1. Capture audio input from a microphone.
-2. Process the audio and convert it into text using the Google Web Speech API.
-3. Handle common errors like timeouts or unrecognizable speech.
+In this project, we’ll use Python’s speech_recognition library to:
+
+- Capture audio input from a microphone.
+- Process the audio and convert it into text using the Google Web Speech API.
+- Open applications like Notepad, Chrome, and WhatsApp based on voice commands.
+- Handle common errors like timeouts or unrecognizable speech.
 
 ---
 
@@ -32,7 +34,16 @@ pip install pyaudio
 Here’s the complete code for our speech recognition tool:
 
 ```
+import os
 import speech_recognition as sr
+
+# Display options for the user
+print("\t\t\t\tWelcome to my Automation Tool")
+print("\t\t\t\t-----------------------------")
+print("Option 1: Open Notepad")
+print("Option 2: Open Chrome")
+print("Option 3: Open WhatsApp")
+print()
 
 # Initialize the Recognizer
 myAI = sr.Recognizer()
@@ -44,16 +55,28 @@ with sr.Microphone() as mysource:
         # Listen for speech with a timeout of 10 seconds
         audio_data = myAI.listen(mysource, timeout=10)
         print("Stopped Recording")
-        
+
         # Recognize speech using Google's Web Speech API
-        data = myAI.recognize_google(audio_data)
-        print("You said:", data)
+        choice = myAI.recognize_google(audio_data).lower()
+        print(f"You said: {choice}")
+
+        # Logic to open applications based on the voice command
+        if (not ("don't" in choice)) and (("notepad" in choice) or ("editor" in choice)):
+            os.system("notepad")
+        elif "chrome" in choice:
+            os.system("start chrome")  # For Windows, 'start' is used to open apps
+        elif "whatsapp" in choice:
+            print("Opening WhatsApp...")
+            # Add the code to open WhatsApp here if needed (such as via WhatsApp Web)
+        else:
+            print("Sorry, I didn't understand that. Please try again.")
     except sr.WaitTimeoutError:
         print("No speech detected within the timeout period.")
     except sr.UnknownValueError:
         print("Sorry, I could not understand the audio.")
     except sr.RequestError as e:
         print(f"Could not request results from Google Speech Recognition service; {e}")
+
 ```
 ## How It Works
 1. `speech_recognition.Recognizer`: The `Recognizer` class processes audio and converts it into text.
